@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turbo Downloader</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      font-size: 13px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 14px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .status-connected {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+    .status-disconnected {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .setting-label {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .2s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #0284c7; }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    .quick-add {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #1e293b;
+    }
+    .quick-add label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-row {
+      display: flex;
+      gap: 6px;
+    }
+    input[type="text"] {
+      flex: 1;
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 7px 10px;
+      color: #f8fafc;
+      font-size: 12px;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: #38bdf8; }
+    .btn {
+      background: #0284c7;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .btn:hover { background: #0369a1; }
+    .select-threads {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      color: #f8fafc;
+      padding: 4px 8px;
+      font-size: 12px;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>Turbo Downloader</span>
+    </div>
+    <div class="status-badge" id="appStatusBadge">
+      <span class="status-dot"></span>
+      <span id="appStatusText">Checking...</span>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <span class="setting-label">Auto-intercept downloads</span>
+    <label class="switch">
+      <input type="checkbox" id="toggleAutoIntercept" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="setting-row">
+    <span class="setting-label">Intercept image saving</span>
+    <label class="switch">
+      <input type="checkbox" id="toggleInterceptImages" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="setting-row">
+    <span class="setting-label">Default Acceleration</span>
+    <select id="selectDefaultThreads" class="select-threads">
+      <option value="4">4 Connections</option>
+      <option value="8" selected>8 Connections</option>
+      <option value="16">16 Connections</option>
+    </select>
+  </div>
+
+  <div class="quick-add">
+    <label>Quick Download Link</label>
+    <div class="input-row">
+      <input type="text" id="inputQuickUrl" placeholder="Paste URL here...">
+      <button class="btn" id="btnQuickDownload">Download</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

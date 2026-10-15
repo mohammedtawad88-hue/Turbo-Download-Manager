@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turbo Download Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top App Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Turbo Downloader</span>
+        <span class="badge-edition">v1.1 Pro</span>
+      </div>
+    </div>
+
+    <!-- Power Actions & Speed Meter -->
+    <div class="header-actions">
+      <!-- Clipboard Monitor Toggle -->
+      <button class="btn btn-tool active" id="btnToggleClipboard" title="Toggle automatic clipboard download link detection">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </svg>
+        <span>Clipboard Sniffer: <strong id="statusClipboard">ON</strong></span>
+      </button>
+
+      <!-- Auto-Shutdown Toggle -->
+      <button class="btn btn-tool" id="btnToggleShutdown" title="Automatically shut down PC when all downloads finish">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+          <line x1="12" y1="2" x2="12" y2="12"></line>
+        </svg>
+        <span>Auto-Shutdown: <strong id="statusShutdown">OFF</strong></span>
+      </button>
+
+      <!-- Windows Startup Toggle -->
+      <button class="btn btn-tool" id="btnToggleStartup" title="Toggle automatic launch when Windows boots (can also be managed in Windows Settings -> Apps -> Startup)">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v10"></path>
+          <path d="M18.4 6.6a9 9 0 1 1-12.8 0"></path>
+        </svg>
+        <span>Boot Startup: <strong id="statusStartup">OFF</strong></span>
+      </button>
+
+      <!-- Chrome Extension Setup Modal Trigger -->
+      <button class="btn btn-tool" id="btnOpenExtensionModal" title="Setup & Activate Chrome Extension for 1-click video and direct downloads">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="4"></circle>
+          <line x1="21.17" y1="8" x2="12" y2="8"></line>
+          <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+          <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+        </svg>
+        <span>⚡ Chrome Extension</span>
+      </button>
+
+      <button id="btnOpenAddModal" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Add URL</span>
+      </button>
+
+      <div class="global-speed-meter" id="globalSpeedMeter">
+        <span class="meter-label">Total Speed:</span>
+        <span class="meter-val" id="totalSpeedVal">0 KB/s</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Clipboard Detection Notification Banner -->
+  <div class="clipboard-banner" id="clipboardBanner">
+    <div class="clipboard-banner-content">
+      <span class="clipboard-icon">⚡</span>
+      <div class="clipboard-text">
+        <strong>Download link detected in clipboard:</strong>
+        <span class="clipboard-url" id="clipboardDetectedUrl">https://example.com/file.zip</span>
+      </div>
+      <div class="clipboard-actions">
+        <button class="btn btn-sm btn-primary" id="btnClipboardDownload">Download Now</button>
+        <button class="btn btn-sm btn-secondary" id="btnClipboardDismiss">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    <!-- Left Navigation Filter -->
+    <aside class="sidebar-filters">
+      <div class="filter-header">Status</div>
+      <button class="filter-item active" data-filter="all">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>All Downloads</span>
+        <span class="count-pill" id="countAll">0</span>
+      </button>
+
+      <button class="filter-item" data-filter="downloading">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        </svg>
+        <span>Downloading</span>
+        <span class="count-pill" id="countDownloading">0</span>
+      </button>
+
+      <button class="filter-item" data-filter="completed">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Completed</span>
+        <span class="count-pill" id="countCompleted">0</span>
+      </button>
+
+      <button class="filter-item" data-filter="paused">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="6" y="4" width="4" height="16"></rect>
+          <rect x="14" y="4" width="4" height="16"></rect>
+        </svg>
+        <span>Paused</span>
+        <span class="count-pill" id="countPaused">0</span>
+      </button>
+
+      <!-- Smart Categories -->
+      <div class="filter-header" style="margin-top: 24px;">Smart Categories</div>
+      <button class="filter-item" data-category="Compressed">
+        <span class="category-icon">📦</span>
+        <span>Compressed</span>
+      </button>
+
+      <button class="filter-item" data-category="Video">
+        <span class="category-icon">🎬</span>
+        <span>Video & Media</span>
+      </button>
+
+      <button class="filter-item" data-category="Images">
+        <span class="category-icon">🖼️</span>
+        <span>Images & Photos</span>
+      </button>
+
+      <button class="filter-item" data-category="Programs">
+        <span class="category-icon">⚙️</span>
+        <span>Programs</span>
+      </button>
+
+      <button class="filter-item" data-category="Documents">
+        <span class="category-icon">📄</span>
+        <span>Documents</span>
+      </button>
+
+      <button class="filter-item" data-category="Music">
+        <span class="category-icon">🎵</span>
+        <span>Music</span>
+      </button>
+    </aside>
+
+    <!-- Main Content List -->
+    <main class="main-content">
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-card">
+          <div class="empty-icon-circle">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </div>
+          <h2>No Active Downloads</h2>
+          <p>Copy any file URL or click download in Chrome to accelerate with 16 parallel stream channels.</p>
+          <button class="btn btn-primary btn-lg" id="btnEmptyAdd">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Download Link</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Downloads List Container -->
+      <div class="downloads-list" id="downloadsList"></div>
+    </main>
+  </div>
+
+  <!-- Add New Download Modal -->
+  <div class="modal-backdrop" id="modalAdd">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>New Download Task</h3>
+        <button class="btn-close" id="btnCloseAddModal">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- URL Input -->
+        <div class="form-group">
+          <label for="inputUrl">Download URL</label>
+          <div class="input-with-button">
+            <input type="text" id="inputUrl" placeholder="https://example.com/file.zip" autofocus>
+            <button class="btn btn-secondary" id="btnProbeUrl">Probe</button>
+          </div>
+        </div>
+
+        <!-- Probed Details Feedback -->
+        <div class="probe-feedback" id="probeFeedback" style="display: none;">
+          <div class="probe-row">
+            <span class="probe-lbl">Detected Size:</span>
+            <span class="probe-val" id="probeSize">-</span>
+          </div>
+          <div class="probe-row">
+            <span class="probe-lbl">Multi-Part Resumable:</span>
+            <span class="probe-val" id="probeResumable">-</span>
+          </div>
+          <div class="probe-row">
+            <span class="probe-lbl">Smart Category:</span>
+            <span class="probe-val text-cyan" id="probeCategory">-</span>
+          </div>
+        </div>
+
+        <!-- File Name -->
+        <div class="form-group">
+          <label for="inputFileName">File Name</label>
+          <input type="text" id="inputFileName" placeholder="file.zip">
+        </div>
+
+        <!-- Save Location -->
+        <div class="form-group">
+          <label for="inputSaveFolder">Save Destination</label>
+          <div class="input-with-button">
+            <input type="text" id="inputSaveFolder" readonly>
+            <button class="btn btn-secondary" id="btnBrowseFolder">Browse...</button>
+          </div>
+          <span class="form-hint">Smart Category will automatically route to subfolder (e.g., /Downloads/Compressed).</span>
+        </div>
+
+        <!-- Acceleration Threads -->
+        <div class="form-group">
+          <label for="selectThreads">Acceleration Segments (Parallel Threads)</label>
+          <select id="selectThreads" class="form-select">
+            <option value="1">1 Connection (Standard)</option>
+            <option value="4">4 Connections</option>
+            <option value="8" selected>8 Connections (Recommended)</option>
+            <option value="16">16 Connections (Maximum Acceleration)</option>
+          </select>
+          <span class="form-hint">Splits file into concurrent byte ranges for maximum speed.</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelAdd">Cancel</button>
+        <button class="btn btn-primary" id="btnStartDownload">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          </svg>
+          <span>Start Download</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto-Shutdown Warning Modal -->
+  <div class="modal-backdrop" id="modalShutdown">
+    <div class="modal-card modal-shutdown-card">
+      <div class="shutdown-icon">🌙</div>
+      <h3>Downloads Finished!</h3>
+      <p>All download queues have completed. Your computer is scheduled to shut down in:</p>
+      <div class="shutdown-countdown" id="shutdownCountdownVal">30s</div>
+      <div class="modal-footer" style="justify-content: center; margin-top: 20px;">
+        <button class="btn btn-danger btn-lg" id="btnCancelShutdown">Cancel Auto-Shutdown</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chrome Extension Setup Modal -->
+  <div class="modal-backdrop" id="modalExtension">
+    <div class="modal-card modal-extension-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">⚡</span>
+          <h3>Chrome Extension Setup Guide</h3>
+        </div>
+        <button class="btn-icon-only btn-secondary" id="btnCloseExtensionModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="ext-status-banner" id="extStatusBanner">
+          <span class="status-dot online"></span>
+          <span>Integration Engine: <strong id="extStatusText">Listening on http://127.0.0.1:18888</strong></span>
+        </div>
+
+        <p class="ext-intro">Follow these 3 easy steps to integrate Turbo Downloader with Google Chrome for 1-click video and fast file capture:</p>
+
+        <div class="ext-steps-list">
+          <div class="ext-step-item">
+            <div class="step-badge">1</div>
+            <div class="step-content">
+              <strong>Open Chrome's Extensions Tab</strong>
+              <p>Type or open <code>chrome://extensions</code> in Google Chrome.</p>
+              <div class="step-actions">
+                <button class="btn btn-sm btn-primary" id="btnLaunchChromeExt">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  <span>Open chrome://extensions</span>
+                </button>
+                <button class="btn btn-sm btn-secondary" id="btnCopyChromeUrl">Copy URL</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ext-step-item">
+            <div class="step-badge">2</div>
+            <div class="step-content">
+              <strong>Enable Developer Mode</strong>
+              <p>Turn ON the <strong>Developer mode</strong> toggle switch at the top-right corner of the Chrome Extensions page.</p>
+            </div>
+          </div>
+
+          <div class="ext-step-item">
+            <div class="step-badge">3</div>
+            <div class="step-content">
+              <strong>Load the Extension</strong>
+              <p>Click <strong>Open Extension Folder</strong> below, then simply drag and drop the folder into Chrome (or click "Load unpacked" and choose this folder).</p>
+              <div class="step-actions">
+                <button class="btn btn-sm btn-primary" id="btnOpenExtFolder">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  <span>Open Extension Folder</span>
+                </button>
+                <button class="btn btn-sm btn-secondary" id="btnRunExtHelper">⚡ 1-Click Auto Setup Helper</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnDoneExtension">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

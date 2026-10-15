@@ -1,0 +1,68 @@
+{
+  "name": "turbo-download-manager",
+  "version": "1.0.0",
+  "description": "High-performance multi-connection segmented download manager inspired by IDM",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "download-manager",
+    "idm",
+    "multi-thread",
+    "electron"
+  ],
+  "author": "Turbo Download Manager Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^34.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.turbodownloadmanager.app",
+    "productName": "Turbo Download Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Turbo Download Manager"
+    },
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "chrome-extension",
+        "to": "chrome-extension",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "files": [
+      "**/*",
+      "!dist",
+      "!**/*.tmp",
+      "!**/*.log",
+      "!scratch"
+    ]
+  }
+}

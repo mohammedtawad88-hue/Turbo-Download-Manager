@@ -1,0 +1,96 @@
+/* Turbo Downloader — Floating Media Sniffer Overlay & YouTube Integration */
+
+.turbo-media-sniffer-btn {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 2147483647 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.6) !important;
+  border-radius: 8px !important;
+  color: #F8FAFC !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 12px rgba(56, 189, 248, 0.3) !important;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
+  user-select: none !important;
+  opacity: 0.92 !important;
+  line-height: 1 !important;
+  pointer-events: auto !important;
+}
+
+.turbo-media-sniffer-btn:hover {
+  opacity: 1 !important;
+  background: rgba(15, 23, 42, 1) !important;
+  border-color: #38BDF8 !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.85), 0 0 18px rgba(56, 189, 248, 0.6) !important;
+}
+
+.turbo-media-sniffer-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+.turbo-media-sniffer-btn .turbo-btn-icon {
+  font-size: 14px !important;
+  color: #38BDF8 !important;
+  filter: drop-shadow(0 0 6px #38BDF8) !important;
+}
+
+.turbo-media-sniffer-btn .turbo-btn-text {
+  letter-spacing: 0.3px !important;
+}
+
+.turbo-media-sniffer-btn.turbo-btn-success {
+  background: rgba(16, 185, 129, 0.95) !important;
+  border-color: #10B981 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* YouTube Action Bar Integration */
+.turbo-yt-action-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 36px !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  border-radius: 18px !important;
+  color: #38BDF8 !important;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  margin-right: 8px !important;
+  margin-left: 4px !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+  pointer-events: auto !important;
+}
+
+.turbo-yt-action-btn:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.6) !important;
+  transform: translateY(-1px) !important;
+}
+
+.turbo-yt-action-btn:active {
+  transform: translateY(0) !important;
+}
+
+.turbo-yt-action-btn.turbo-btn-success {
+  background: #10B981 !important;
+  border-color: #10B981 !important;
+  color: #FFFFFF !important;
+}
