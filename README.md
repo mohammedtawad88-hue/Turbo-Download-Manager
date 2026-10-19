@@ -3,6 +3,7 @@
 > High-performance, clean-room multi-connection segmented download manager inspired by Internet Download Manager (IDM). Built with Electron, Node.js, and multi-stream HTTP range acceleration.
 
 [![Download for Windows](https://img.shields.io/badge/Download%20for%20Windows-v1.0.0-0284c7?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/mohammedtawad88-hue/Turbo-Download-Manager/releases/download/v1.0.0/Turbo.Download.Manager.Setup.1.0.0.exe)
+[![Total Downloads](https://img.shields.io/github/downloads/mohammedtawad88-hue/Turbo-Download-Manager/total?style=for-the-badge&color=10b981&logo=github&label=Downloads)](https://github.com/mohammedtawad88-hue/Turbo-Download-Manager/releases)
 [![GitHub release](https://img.shields.io/github/v/release/mohammedtawad88-hue/Turbo-Download-Manager?style=for-the-badge)](https://github.com/mohammedtawad88-hue/Turbo-Download-Manager/releases/latest)
 
 ---
